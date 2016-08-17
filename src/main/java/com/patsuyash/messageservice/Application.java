@@ -33,21 +33,24 @@ public class Application extends SpringBootServletInitializer {
     @EnableWebSecurity
     static class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+        public static final String ADMIN_ROLE_NAME = "ADMIN";
+        public static final String USER_ROLE_NAME = "USER";
+
         @Override
         protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 
             auth.inMemoryAuthentication().
-                    withUser("suyash").password("patil").roles("USER","ADMIN").and().
-                    withUser("dom").password("parker").roles("USER", "ADMIN");
+                    withUser("suyash").password("patil").roles(USER_ROLE_NAME, ADMIN_ROLE_NAME).and().
+                    withUser("dom").password("parker").roles(USER_ROLE_NAME, ADMIN_ROLE_NAME);
         }
         @Override
         protected void configure(HttpSecurity http) throws Exception {
 
             http.httpBasic().and().authorizeRequests().
-                    antMatchers(HttpMethod.GET, "/message").hasRole("USER").
-                    antMatchers(HttpMethod.POST, "/message").hasRole("ADMIN").
-                    antMatchers(HttpMethod.GET, "/message/**").hasRole("USER").
-                    antMatchers(HttpMethod.POST, "/message/**").hasRole("ADMIN").and().
+                    antMatchers(HttpMethod.GET, "/message").hasRole(USER_ROLE_NAME).
+                    antMatchers(HttpMethod.POST, "/message").hasRole(ADMIN_ROLE_NAME).
+                    antMatchers(HttpMethod.GET, "/message/**").hasRole(USER_ROLE_NAME).
+                    antMatchers(HttpMethod.POST, "/message/**").hasRole(ADMIN_ROLE_NAME).and().
                     csrf().disable();
         }
     }
